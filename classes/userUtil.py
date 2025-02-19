@@ -1,5 +1,6 @@
 import random
 import datetime as dt
+import string as st
 
 class UserUtil:
     @staticmethod
@@ -10,7 +11,15 @@ class UserUtil:
 
     @staticmethod
     def generate_password():
-        return ''.join(random.choices("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890!@#$%^&*()_+=?/';:>.<,~`", k=8))
+        password = [
+        random.choice(st.ascii_lowercase),
+        random.choice(st.ascii_uppercase),
+        random.choice(st.digits),
+        random.choice(st.punctuation)
+        ]
+        password += random.choices(st.ascii_letters + st.digits + st.punctuation, k=4)
+        return ''.join(password)
+
 
     @staticmethod
     def is_strong_password(password):
@@ -24,7 +33,23 @@ class UserUtil:
 
     @staticmethod
     def validate_email(email):
-        if '@' in email:
-            return True
+        if '@' not in email and '.' not in email:
+            return False
 
+        parts = email.split('@')
 
+        if len(parts) != 2:
+            return False
+
+        local, domain = parts
+
+        if not local:
+            return False
+        if not '.' in domain:
+            return False
+
+        domain_parts = domain.split('.')
+
+        if len(domain_parts) < 2:
+            return False
+        return True
